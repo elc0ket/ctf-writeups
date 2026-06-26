@@ -1,12 +1,15 @@
 
 ## Información General
 
-| Campo          | Valor        |
-| -------------- | ------------ |
-| **Plataforma** | whoami-labs  |
-| **Dificultad** | Fácil        |
-| **Autor**      | elc0ket      |
-## Técnicas usadas Enumeración FTP, Fuerza bruta SSH, Escalada por SUID
+| Campo          | Valor       |
+| -------------- | ----------- |
+| **Plataforma** | whoami-labs |
+| **Dificultad** | Fácil       |
+| **Autor**      | elc0ket     |
+## Técnicas
+
+Enumeración FTP, Fuerza bruta SSH, Escalada por SUID
+
 ---
 ## Fase 1: Reconocimiento (Enumeración)
 ### Escaneo de Puertos con Nmap
@@ -19,7 +22,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -sC -sV -oN ports 172.17.0.2
 
 **Resultados:**
 
-![img](images/IMG-20260624180929272.png)
+![[Writeup/whoami-labs/images/IMG-20260624180929272.png]]
 
 
 **Análisis:**
@@ -47,7 +50,7 @@ ftp 172.17.0.2
     
 - Contraseña: (vacía) 
 
-![img](images/IMG-20260624181024699.png)
+![[Writeup/whoami-labs/images/IMG-20260624181024699.png]]
 
 
 **Explorando el FTP:**
@@ -56,14 +59,14 @@ ftp 172.17.0.2
 ftp> ls
 ```
 
-![img](images/IMG-20260624181107710.png)
+![[Writeup/whoami-labs/images/IMG-20260624181107710.png]]
 
 ```bash
 ftp> cd pub
 ftp> ls
 ```
 
-![img](images/IMG-20260624181146057.png)
+![[Writeup/whoami-labs/images/IMG-20260624181146057.png]]
 
 
 **Hallazgo crítico:** Encontramos un archivo `usuarios.txt` en el directorio `pub`.
@@ -75,19 +78,12 @@ ftp> get usuarios.txt
 ftp> exit
 ```
 
-![img](images/IMG-20260624181227146.png)
+![[Writeup/whoami-labs/images/IMG-20260624181227146.png]]
 
 ---
 
-### Enumeración Web (Puerto 80)
 
-Accedemos a la página web para verificar si hay información adicional.
-
-```bash
-http://172.17.0.2/
-```
-
-![img](images/IMG-20260624181304689.png)
+![[Writeup/whoami-labs/images/IMG-20260624181304689.png]]
 
 **Observaciones:**
 
@@ -108,7 +104,7 @@ http://172.17.0.2/
 cat usuarios.txt
 ```
 
-![img](images/IMG-20260624181346563.png)
+![[Writeup/whoami-labs/images/IMG-20260624181346563.png]]
 
 **Observaciones:**
 
@@ -136,13 +132,13 @@ cut -d: -f2 usuarios.txt > passwd.txt
 cat users.txt
 ```
 
-![img](images/IMG-20260624181426539.png)
+![[Writeup/whoami-labs/images/IMG-20260624181426539.png]]
 
 ```bash
 cat passwd.txt
 ```
 
-![img](images/IMG-20260624181449860.png)
+![[Writeup/whoami-labs/images/IMG-20260624181449860.png]]
 
 ### Ataque con Hydra (SSH)
 
@@ -154,7 +150,7 @@ hydra -L users.txt -P passwd.txt ssh://172.17.0.2 -t 4 -f
 
 **Resultado esperado:**
 
-![img](images/IMG-20260624181854535.png)
+![[Writeup/whoami-labs/images/IMG-20260624181854535.png]]
 
 ### Conexión SSH
 
@@ -184,7 +180,7 @@ ssh alberto@172.17.0.2
 
 **Conexión exitosa:**
 
-![img](images/IMG-20260624181943988.png)
+![[Writeup/whoami-labs/images/IMG-20260624181943988.png]]
 
 ---
 
@@ -198,7 +194,7 @@ ssh alberto@172.17.0.2
 bash-5.2$ whoami
 ```
 
-![img](images/IMG-20260624182016028.png)
+![[Writeup/whoami-labs/images/IMG-20260624182016028.png]]
 
 **2. Verificar permisos `sudo`:**
 
@@ -206,7 +202,7 @@ bash-5.2$ whoami
 bash-5.2$ sudo -l
 ```
 
-![img](images/IMG-20260624182054517.png)
+![[Writeup/whoami-labs/images/IMG-20260624182054517.png]]
 
 **Conclusión:** El usuario `alberto` no tiene permisos `sudo`.
 
@@ -216,7 +212,7 @@ bash-5.2$ sudo -l
 bash-5.2$ find / -perm -4000 2>/dev/null
 ```
 
-![img](images/IMG-20260624182149061.png)
+![[Writeup/whoami-labs/images/IMG-20260624182149061.png]]
 
 **Hallazgo crítico:** `/usr/bin/bash` tiene el bit SUID activado.
 
@@ -226,20 +222,20 @@ bash-5.2$ find / -perm -4000 2>/dev/null
 bash-5.2$ /usr/bin/bash -p
 ```
 
-![img](images/IMG-20260624182218436.png)
+![[Writeup/whoami-labs/images/IMG-20260624182218436.png]]
 
 ```
 bash-5.2# whoami
 ```
 
-![img](images/IMG-20260624182315215.png)
+![[Writeup/whoami-labs/images/IMG-20260624182315215.png]]
 ### Captura de la Flag
 
 ```bash
 bash-5.2# cd /root
 ```
 
-![img](images/IMG-20260624182401122.png)
+![[Writeup/whoami-labs/images/IMG-20260624182401122.png]]
 
 ---
 
@@ -247,24 +243,22 @@ bash-5.2# cd /root
 
 ### Resumen del Ataque
 
-|Fase|Acción|Resultado|
-|---|---|---|
-|**1. Reconocimiento**|Escaneo Nmap|Puertos 21, 22, 80 abiertos|
-|**2. Enumeración FTP**|Acceso anónimo|Descarga de `usuarios.txt`|
-|**3. Fuerza Bruta**|Hydra contra SSH|Credenciales `alberto:admin123`|
-|**4. Escalada**|SUID en `/bin/bash`|Shell como root|
-|**5. Flag**|Lectura de `/root/flag.txt`|`@n0n_h@CKEr`|
+| Fase                   | Acción                      | Resultado                       |
+| ---------------------- | --------------------------- | ------------------------------- |
+| **1. Reconocimiento**  | Escaneo Nmap                | Puertos 21, 22, 80 abiertos     |
+| **2. Enumeración FTP** | Acceso anónimo              | Descarga de `usuarios.txt`      |
+| **3. Fuerza Bruta**    | Hydra contra SSH            | Credenciales `alberto:admin123` |
+| **4. Escalada**        | SUID en `/bin/bash`         | Shell como root                 |
+| **5. Flag**            | Lectura de `/root/flag.txt` | `@n0n_h@CKEr`                   |
 
 ### Lecciones Aprendidas
 
-1. **FTP anónimo:** Nunca dejar servicios FTP con acceso anónimo habilitado, especialmente si contienen archivos sensibles.
+1. **Hardening:** `/etc/passwd` nunca debe permitir escritura a grupos comunes; sus permisos deben ser estrictamente `644` (`root:root`).
+ 
+2. **Seguridad Web:** No exponer diccionarios ni listas de usuarios en directorios indexables públicamente.
     
-2. **Credenciales en texto plano:** Almacenar contraseñas en archivos de texto plano es una mala práctica de seguridad.
-    
-3. **SUID en shells:** Un binario como `bash` nunca debe tener el bit SUID activado, ya que permite una escalada de privilegios trivial.
-    
-4. **Fuerza bruta:** Las contraseñas débiles (`admin123`) son fácilmente vulnerables a ataques de diccionario.
-    
+3. **Gestión de Accesos:** Implementar contraseñas robustas y herramientas como `Fail2Ban` para mitigar ataques de fuerza bruta en SSH.
+ 
 
 ### Medidas de Mitigación
 
