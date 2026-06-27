@@ -24,7 +24,7 @@ ssh-keygen -f '/home/kali/.ssh/known_hosts' -R '172.17.0.2'
 ssh hacker@172.17.0.2
 ```
 
-![[IMG-20260627185007308.png]]
+![](images/IMG-20260627185007308.png)
 
 ---
 
@@ -38,7 +38,7 @@ find / -perm -4000 -type f 2>/dev/null
 
 Binarios destacados:
 
-![[IMG-20260627185035583.png]]
+![](images/IMG-20260627185035583.png)
 ### Explotación con `less`
 
 `less` con SUID permite escribir en archivos del sistema como `root`. Lo usamos para inyectar un usuario sin contraseña directamente en `/etc/passwd`:
@@ -62,7 +62,7 @@ Migramos al nuevo usuario:
 su admin
 ```
 
-![[IMG-20260627185109482.png]]
+![](images/IMG-20260627185109482.png)
 
 ### Captura de Flag
 
@@ -71,7 +71,7 @@ cd /root
 cat flag.txt
 ```
 
-![[IMG-20260627185302745.png]]
+![](images/IMG-20260627185302745.png)
 
 ---
 
