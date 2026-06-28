@@ -20,13 +20,13 @@ ssh-keygen -f '/home/kali/.ssh/known_hosts' -R '172.17.0.2'
 ssh hacker@172.17.0.2
 ```
 
-![](images/IMG-20260628160845354.png)
+![](images/IMG-20260628163847544.png)
 
 ```
 hacker@bec55ccaa8b2:~$ whoami
 ```
 
-![](images/IMG-20260628160913845.png)
+![](images/IMG-20260628163847670.png)
 
 ---
 
@@ -38,7 +38,7 @@ Buscamos binarios con el bit SUID activo. Estos se ejecutan con los privilegios 
 find / -perm -4000 -type f 2>/dev/null
 ```
 
-![](images/IMG-20260628160957297.png)
+![](images/IMG-20260628163847748.png)
 
 Dos binarios destacan inmediatamente por ser no estándar: `/usr/local/bin/python3_suid` y `/usr/local/bin/pexec`. Ambos tienen el bit SUID activo con propietario root, lo que los convierte en vectores de escalada de privilegios.
 
@@ -58,7 +58,7 @@ Dos binarios destacan inmediatamente por ser no estándar: `/usr/local/bin/pytho
 root@289896a8a273:~# whoami
 ```
 
-![](images/IMG-20260628161104736.png)
+![](images/IMG-20260628163847801.png)
 
 ### Vector 2 — python3_suid (alternativo)
 
@@ -72,7 +72,7 @@ root@289896a8a273:~# whoami
 root@289896a8a273:~# whoami
 ```
 
-![](images/IMG-20260628161139171.png)
+![](images/IMG-20260628163847855.png)
 
 `os.execv` reemplaza el proceso Python por `/bin/bash` manteniendo el UID efectivo de root heredado del binario SUID.
 
@@ -86,7 +86,7 @@ ls
 cat *
 ```
 
-![](images/IMG-20260628161240523.png)
+![](images/IMG-20260628163847906.png)
 
 ---
 
