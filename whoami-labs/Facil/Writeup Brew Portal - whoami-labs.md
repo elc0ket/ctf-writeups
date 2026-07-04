@@ -9,6 +9,7 @@
 
 ## Técnicas usadas
 
+- Escaneo de puertos y enumeración de servicios con `nmap`
 - Identificación de LFI (Local File Inclusion) vía parámetro `page`
 - Path traversal para lectura arbitraria de archivos (`/etc/passwd`)
 - Lectura de código fuente PHP mediante wrapper `php://filter/convert.base64-encode`
