@@ -193,7 +193,7 @@ Tras esperar la ejecución automática de la tarea:
 ls -l /bin/bash
 ```
 
-![](images/IMG-20260706122827304.png)
+![](images/IMG-20260706124128140.png)
 
 El bit SUID (`s`) confirma que `/bin/bash` ahora se ejecuta con privilegios de su propietario (`root`) sin importar quién lo invoque.
 
