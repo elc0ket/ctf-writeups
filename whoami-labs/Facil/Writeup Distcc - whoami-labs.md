@@ -19,7 +19,7 @@ La máquina expone únicamente el servicio `distccd` (puerto 3632/tcp), un demon
 - Detección de vulnerabilidad con script NSE (`distcc-cve2004-2687`)
 - Explotación de distcc Daemon Command Execution (CVE-2004-2687)
 - Obtención de reverse shell vía Netcat
-- Estabilización de shell (PTY spawn + stty raw)
+- Estabilización de shell (PTY spawn + stty icanon)
 - Enumeración de binarios SUID
 - Bypass de lectura de archivos protegidos mediante GTFOBins (`base32`, `tar`)
 
@@ -89,8 +89,7 @@ Para evitar la pérdida de la sesión, se genera una PTY completa antes de que l
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
-Seguido de:
-
+Seguido de: 
 
 ```bash
 # Ctrl+Z
