@@ -39,7 +39,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 
 ![](images/IMG-20260713174527267.png)
 
-Se identifican dos puertos abiertos: 1099 (rmiregistry estándar) y 42061.
+Se identifican dos puertos abiertos: 1099 (rmiregistry estándar) y 45325.
 
 ### 2. Identificación de versiones y servicios
 
