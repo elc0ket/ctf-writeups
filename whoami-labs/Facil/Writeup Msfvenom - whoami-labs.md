@@ -5,7 +5,7 @@
 | **Máquina**                      | Msfvenom (whoami-labs)                                                             |
 | **Dificultad**                   | Fácil                                                                              |
 | **IP Objetivo**                  | 172.17.0.2                                                                         |
-| **Puertos Abiertos**             | 1099, 42061                                                                        |
+| **Puertos Abiertos**             | 1099, 45325                                                                        |
 | **Servicios**                    | Java RMI (GNU Classpath grmiregistry)                                              |
 | **Vulnerabilidades Principales** | CVE-2011-3556 (RMI registry default classloader), CVE-2019-2684 (localhost bypass) |
 
@@ -67,7 +67,9 @@ nmap -sV --script "rmi-dumpregistry or rmi-vuln-classloader" -p 1099 172.17.0.2
 nmap -sV --script "rmi-dumpregistry or rmi-vuln-classloader" -p 45325 172.17.0.2
 ```
 
-![](images/IMG-20260713175555619.png)
+**Output:**
+
+![](images/IMG-20260713181251644.png)
 
 **Confirmación crítica:** El script detecta la vulnerabilidad de classloader remoto en el registro RMI. Este es el vector de ataque.
 
