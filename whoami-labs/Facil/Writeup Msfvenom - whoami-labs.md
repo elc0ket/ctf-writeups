@@ -1,14 +1,13 @@
 ## Información General
 
-|Campo|Valor|
-|---|---|
-|**Máquina**|Msfvenom (whoami-labs)|
-|**Dificultad**|Fácil|
-|**IP Objetivo**|172.17.0.2|
-|**Puertos Abiertos**|1099, 42061|
-|**Servicios**|Java RMI (GNU Classpath grmiregistry)|
-|**Vulnerabilidades Principales**|CVE-2011-3556 (RMI registry default classloader), CVE-2019-2684 (localhost bypass)|
-|**Flag**|`JAVA{rm1_d3s3r14l1z4t10n_rce_3xpl01t}`|
+| Campo                            | Valor                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| **Máquina**                      | Msfvenom (whoami-labs)                                                             |
+| **Dificultad**                   | Fácil                                                                              |
+| **IP Objetivo**                  | 172.17.0.2                                                                         |
+| **Puertos Abiertos**             | 1099, 42061                                                                        |
+| **Servicios**                    | Java RMI (GNU Classpath grmiregistry)                                              |
+| **Vulnerabilidades Principales** | CVE-2011-3556 (RMI registry default classloader), CVE-2019-2684 (localhost bypass) |
 
 ---
 
