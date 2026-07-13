@@ -51,7 +51,7 @@ nmap -p 1099,45325 -sC -sV -oN allports 172.17.0.2
 
 ![](images/IMG-20260713175012767.png)
 
-Puerto ejecutan **GNU Classpath grmiregistry** — una implementación alternativa y más antigua de RMI.
+Puertos ejecutan **GNU Classpath grmiregistry** — una implementación alternativa y más antigua de RMI.
 
 ### 3. Verificación de vulnerabilidades con nmap scripts
 
