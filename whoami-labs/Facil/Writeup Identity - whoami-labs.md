@@ -1,16 +1,15 @@
 ## Información General
 
-|Campo|Detalle|
-|---|---|
-|Nombre de la máquina|Identity|
-|Plataforma|whoami-labs|
-|IP|172.17.0.2|
-|Dificultad|Fácil|
-|Sistema Operativo|Linux (Ubuntu, contenedor Docker)|
-|Servicios expuestos|80/tcp (HTTP - Apache 2.4.52)|
-|Vulnerabilidades|Command Injection en herramienta de diagnóstico|
-|Vector de escalada|Sudo NOPASSWD sobre `/usr/bin/find` (GTFOBins)|
-|Flag|`Identity{p0w3r_0f_th3_checklist}`|
+| Campo                | Detalle                                         |
+| -------------------- | ----------------------------------------------- |
+| Nombre de la máquina | Identity                                        |
+| Plataforma           | whoami-labs                                     |
+| IP                   | 172.17.0.2                                      |
+| Dificultad           | Fácil                                           |
+| Sistema Operativo    | Linux (Ubuntu, contenedor Docker)               |
+| Servicios expuestos  | 80/tcp (HTTP - Apache 2.4.52)                   |
+| Vulnerabilidades     | Command Injection en herramienta de diagnóstico |
+| Vector de escalada   | Sudo NOPASSWD sobre `/usr/bin/find` (GTFOBins)  |
 
 ---
 
