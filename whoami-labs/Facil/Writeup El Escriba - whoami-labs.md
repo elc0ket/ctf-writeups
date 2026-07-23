@@ -36,7 +36,7 @@ Se lanza un escaneo rápido de todos los puertos TCP para identificar la superfi
 nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 ```
 
-![[IMG-20260723160522314.png]]
+![](images/IMG-20260723160522314.png)
 
 Solo dos puertos abiertos: SSH (22) y HTTP (80).
 
@@ -46,7 +46,7 @@ Solo dos puertos abiertos: SSH (22) y HTTP (80).
 nmap -p 22,80 -sC -sV -oN allports 172.17.0.2  
 ```
 
-![[IMG-20260723160522438.png]]
+![](images/IMG-20260723160522438.png)
 
 No se detectan scripts NSE con vulnerabilidades obvias. Se procede a inspeccionar el servicio web manualmente.
 
@@ -56,7 +56,7 @@ No se detectan scripts NSE con vulnerabilidades obvias. Se procede a inspecciona
 http://172.17.0.2/
 ```
 
-![[IMG-20260723160522623.png]]
+![](images/IMG-20260723160522623.png)
 
 El dashboard en sí no aporta nada explotable a nivel visual: son métricas estáticas sin interactividad ni formularios. Se descarta la vía de inyección/parámetros y se revisa el código fuente.
 
@@ -64,11 +64,11 @@ El dashboard en sí no aporta nada explotable a nivel visual: son métricas est�
 
 Al inspeccionar el HTML se encuentra un bloque `<script>` con un objeto de configuración interno:
 
-![[IMG-20260723160522742.png]]
+![](images/IMG-20260723160522742.png)
 
 El comentario "TODO: Move these variables to a secure vault before the Q4 audit" confirma que `legacy_auth` es un dato sensible que nunca se migró a un almacén seguro.
 
-![[IMG-20260723160522845.png]]
+![](images/IMG-20260723160522845.png)
 
 ### 5. Decodificación de las credenciales
 
@@ -82,7 +82,7 @@ Legacy_auth: c3R1ZGVudDpzdHVkZW50MTIz
 https://gchq.github.io/CyberChef/ > magic
 ```
 
-![[IMG-20260723160522950.png]]
+![](images/IMG-20260723160522950.png)
 
 El resultado revela un par de credenciales en formato `usuario:contraseña`:
 
@@ -103,7 +103,7 @@ ssh student@172.17.0.2
 student@1b46120a5485:~$ whoami
 ```
 
-![[IMG-20260723160523048.png]]
+![](images/IMG-20260723160523048.png)
 
 Acceso inicial confirmado como el usuario `student`.
 
@@ -113,7 +113,7 @@ Acceso inicial confirmado como el usuario `student`.
 student@1b46120a5485:~$ grep bash /etc/passwd
 ```
 
-![[IMG-20260723160523141.png]]
+![](images/IMG-20260723160523141.png)
 
 Solo dos usuarios con shell interactiva: `root` y `student`.
 
@@ -123,7 +123,7 @@ Solo dos usuarios con shell interactiva: `root` y `student`.
 student@1b46120a5485:~$ sudo -l
 ```
 
-![[IMG-20260723160523265.png]]
+![](images/IMG-20260723160523265.png)
 
 `sudo` ni siquiera está instalado en el sistema. Se descarta esta vía y se continúa con la búsqueda de binarios SUID.
 
@@ -133,7 +133,7 @@ student@1b46120a5485:~$ sudo -l
 student@1b46120a5485:~$ find / -perm -4000 -type f 2>/dev/null
 ```
 
-![[IMG-20260723160523363.png]]
+![](images/IMG-20260723160523363.png)
 
 Todos los binarios SUID encontrados son estándar del sistema y no presentan una vía de escalada evidente (no hay `GTFOBins` aprovechables entre ellos en este contexto). Se descarta esta línea y se pivota hacia Linux Capabilities.
 
@@ -143,7 +143,7 @@ Todos los binarios SUID encontrados son estándar del sistema y no presentan una
 student@1b46120a5485:~$ getcap -r / 2>/dev/null
 ```
 
-![[IMG-20260723160523474.png]]
+![](images/IMG-20260723160523474.png)
 
 `vim.tiny` tiene asignada la capability `cap_dac_override`, que permite saltarse las comprobaciones de permisos de lectura/escritura sobre el sistema de ficheros. Esto habilita la lectura de cualquier archivo, incluidos los pertenecientes a `root`.
 
@@ -153,7 +153,7 @@ student@1b46120a5485:~$ getcap -r / 2>/dev/null
 /usr/bin/vim.tiny /root/root.txt
 ```
 
-![[IMG-20260723160523585.png]]
+![](images/IMG-20260723160523585.png)
 
 ### 12. Flag de usuario
 
