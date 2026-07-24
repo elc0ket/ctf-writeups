@@ -32,7 +32,7 @@ El reconocimiento inicial reveló un servicio HTTP corriendo un `SimpleHTTPServe
 nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 ```
 
-![](IMG-20260724115544793.png)
+![](images/IMG-20260724115544793.png)
 
 ### 2. Detección de versiones
 
@@ -40,7 +40,7 @@ nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 172.17.0.2
 nmap -p 22,8080 -sC -sV -oN allports 172.17.0.2
 ```
 
-![](IMG-20260724115544959.png)
+![](images/IMG-20260724115544959.png)
 
 ### 3. Enumeración web
 
@@ -48,7 +48,7 @@ nmap -p 22,8080 -sC -sV -oN allports 172.17.0.2
 http://172.17.0.2:8080/
 ```
 
-![](IMG-20260724115545131.png)
+![](images/IMG-20260724115545131.png)
 
 Se identifica el directorio `.old/` como punto de interés.
 
@@ -58,7 +58,7 @@ Se identifica el directorio `.old/` como punto de interés.
 http://172.17.0.2:8080/.old/
 ```
 
-![](IMG-20260724115545329.png)
+![](images/IMG-20260724115545329.png)
 
 Se descargan ambos archivos: `bash_history_bak` y `key.private`.
 
@@ -68,7 +68,7 @@ Se descargan ambos archivos: `bash_history_bak` y `key.private`.
 cat bash_history_bak
 ```
 
-![[IMG-20260724115545505.png]]
+![](images/IMG-20260724115545505.png)
 
 El histórico confirma que `key.private` es en realidad la clave privada `id_rsa` generada para el usuario `student`, olvidada en un directorio temporal de desarrollo nunca limpiado.
 
@@ -90,7 +90,7 @@ ssh -i key.private student@172.17.0.2
 student@a0ef61e1b65d:~$ whoami
 ```
 
-![](IMG-20260724115545720.png)
+![](images/IMG-20260724115545720.png)
 
 ### 7. Enumeración de usuarios
 
@@ -98,7 +98,7 @@ student@a0ef61e1b65d:~$ whoami
 student@a0ef61e1b65d:~$ grep bash /etc/passwd
 ```
 
-![](IMG-20260724115545902.png)
+![](images/IMG-20260724115545902.png)
 
 ### 8. Comprobación de sudo
 
@@ -106,7 +106,7 @@ student@a0ef61e1b65d:~$ grep bash /etc/passwd
 student@a0ef61e1b65d:~$ sudo -l
 ```
 
-![](IMG-20260724115546074.png)
+![](images/IMG-20260724115546074.png)
 
 `sudo` no está disponible, se descarta esa vía de escalada.
 
@@ -116,7 +116,7 @@ student@a0ef61e1b65d:~$ sudo -l
 student@a0ef61e1b65d:~$ find / -perm -4000 -type f 2>/dev/null
 ```
 
-![](IMG-20260724115546227.png)
+![](images/IMG-20260724115546227.png)
 
 Todos los binarios SUID encontrados son estándar del sistema, sin vectores evidentes. Se descarta esta ruta y se pasa a revisar capabilities.
 
@@ -126,7 +126,7 @@ Todos los binarios SUID encontrados son estándar del sistema, sin vectores evid
 getcap -r / 2>/dev/null
 ```
 
-![](IMG-20260724115546393.png)
+![](images/IMG-20260724115546393.png)
 
 Aparece un binario no estándar, `/usr/bin/sysowner`, con la capability `cap_chown` permite cambiar el propietario de cualquier archivo sin restricciones de permisos.
 
@@ -152,7 +152,7 @@ su x
 root@a0ef61e1b65d:/home/student# whoami
 ```
 
-![](IMG-20260724115546561.png)
+![](images/IMG-20260724115546561.png)
 
 ### 12. Captura de flags
 
@@ -160,14 +160,14 @@ root@a0ef61e1b65d:/home/student# whoami
 root@a0ef61e1b65d:/home/student# cat user.txt
 ```
 
-![[IMG-20260724115546720.png]]
+![](images/IMG-20260724115546720.png)
 
 ```
 root@a0ef61e1b65d:~# cat /root
 root@a0ef61e1b65d:~# cat root.txt
 ```
 
-![](IMG-20260724115546901.png)
+![](images/IMG-20260724115546901.png)
 
 ```
 Capabilities{e1_h3r3d3r0_sysowner}
@@ -189,8 +189,5 @@ Capabilities{e1_h3r3d3r0_backup}
 - Evitar guardar histórico de comandos con operaciones sensibles, o purgarlo tras tareas de mantenimiento.
 - Auditar periódicamente binarios con capabilities asignadas (`getcap -r /`) igual que se audita SUID/SGID.
 - Restringir `cap_chown` u otras capabilities peligrosas únicamente a binarios estrictamente necesarios y con validación de argumentos.
-
-
-
 
 
