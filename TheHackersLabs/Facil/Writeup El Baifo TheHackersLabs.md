@@ -37,7 +37,7 @@ La máquina expone un sitio web corporativo de una quesería artesanal (El Baifo
 sudo nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 192.168.241.148
 ```
 
-![[IMG-20260809133541450.png]]
+![](images/IMG-20260809133541450.png)
 
 ### 2. Escaneo de versiones y scripts por defecto
 
@@ -47,7 +47,7 @@ nmap -p 22,80,1883,6379 -sC -sV -oN allports 192.168.241.148
 
 Resultado relevante:
 
-![[IMG-20260809133541549.png]]
+![](images/IMG-20260809133541549.png)
 
 El script `mqtt-subscribe` de Nmap ya adelanta información interesante, incluyendo un mensaje del tópico `baifo/sistemas/turno`:
 
@@ -55,13 +55,13 @@ El script `mqtt-subscribe` de Nmap ya adelanta información interesante, incluye
 baifo/sistemas/turno: Encargado de turno: Antonio (pastor01) — revisión de collares OK
 ```
 
-![[IMG-20260809133541616.png]]
+![](images/IMG-20260809133541616.png)
 
 ### 3. Enumeración web
 
 Se accede a `http://192.168.241.148/` y se revisa el código fuente. Se trata de la web corporativa de una quesería, sin funcionalidad de backend evidente ni formularios explotables. No se encuentran credenciales ni comentarios sensibles en el HTML.
 
-![[IMG-20260809133541672.png]]
+![](images/IMG-20260809133541672.png)
 
 ### 4. Fuzzing de directorios
 
@@ -69,7 +69,7 @@ Se accede a `http://192.168.241.148/` y se revisa el código fuente. Se trata de
 dirsearch -u http://192.168.241.148/ --exclude-status 403,404,500 -e php,txt,html
 ```
 
-![[IMG-20260809133541724.png]]
+![](images/IMG-20260809133541724.png)
 
 Solo se descubre el directorio de recursos estáticos del sitio; no aporta vía de explotación (pista descartada).
 
@@ -91,7 +91,7 @@ Redis responde sin requerir autenticación. Solo existe una key residual (`clave
 mosquitto_sub -h 192.168.241.148 -t 'baifo/sistemas/#' -v
 ```
 
-![[IMG-20260809133541792.png]]
+![](images/IMG-20260809133541792.png)
 
 Se confirma el nombre de usuario del sistema: `pastor01`.
 
@@ -144,13 +144,13 @@ Acceso concedido como `pastor01`.
 grep bash /etc/passwd
 ```
 
-![[IMG-20260809133541846.png]]
+![](images/IMG-20260809133541846.png)
 
 ```
 cat user.txt
 ```
 
-![[IMG-20260809133541900.png]]
+![](images/IMG-20260809133541900.png)
 
 ### 10. Enumeración de procesos con pspy64
 
@@ -170,7 +170,7 @@ chmod +x pspy64
 
 Se observa una tarea programada ejecutándose como root:
 
-![[IMG-20260809133541941.png]]
+![](images/IMG-20260809133541941.png)
 
 ### 11. Localización del vector de escalada
 
@@ -179,26 +179,26 @@ cd /opt/baifo
 ls
 ```
 
-![[IMG-20260809133541973.png]]
+![](images/IMG-20260809133541973.png)
 
 ```
 cd scripts
 ls
 ```
 
-![[IMG-20260809133542050.png]]
+![](images/IMG-20260809133542050.png)
 
 ```
 ls -la backup-collares.sh
 ```
 
-![[IMG-20260809133542336.png]]
+![](images/IMG-20260809133542336.png)
 
 ```
 cat backup-collares.sh
 ```
 
-![[IMG-20260809133542400.png]]
+![](images/IMG-20260809133542400.png)
 
 `pastor01` pertenece al grupo propietario del script y tiene permiso de escritura sobre él, mientras que el script se ejecuta periódicamente como root (confirmado con `pspy64`).
 
@@ -216,7 +216,7 @@ Tras la siguiente ejecución del cron:
 ls -l /bin/bash
 ```
 
-![[IMG-20260809133542534.png]]
+![](images/IMG-20260809133542534.png)
 
 ### 13. Shell como root
 
@@ -225,7 +225,7 @@ bash -p
 whoami
 ```
 
-![[IMG-20260809133542585.png]]
+![](images/IMG-20260809133542585.png)
 
 ### 14. Captura de la flag de root
 
@@ -234,7 +234,7 @@ cd /root
 cat root.txt
 ```
 
-![[IMG-20260809133542636.png]]
+![](images/IMG-20260809133542636.png)
 
 ---
 
