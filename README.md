@@ -15,17 +15,17 @@ Writeups técnicos de máquinas y retos CTF resueltos en distintas plataformas, 
 
 | Máquina | Plataforma | Dificultad | Técnicas clave |
 |---|---|---|---|
-| Msfvenom | whoami-labs | - | Java RMI (CVE-2011-3556) |
-| PostgreSQL | whoami-labs | - | Credenciales débiles, `COPY FROM PROGRAM` (CVE-2019-9193) |
-| El Escriba | whoami-labs | - | Credenciales Base64 filtradas, capability `cap_dac_override` |
-| El Archivero | whoami-labs | - | Directory listing, capability `cap_dac_read_search` en `tar` |
-| El Heredero | whoami-labs | - | Clave SSH filtrada, capability `cap_chown` |
-| Jinteki | ThePwnLab | - | FTP anónimo, cifrado AES-256-CBC, `sudo ALL:ALL` |
-| El Baifo | TheHackersLabs | - | Redis sin auth, MQTT leak, cron script editable por grupo |
+| Msfvenom | whoami-labs | Facil | Java RMI (CVE-2011-3556) |
+| PostgreSQL | whoami-labs | Facil | Credenciales débiles, `COPY FROM PROGRAM` (CVE-2019-9193) |
+| El Escriba | whoami-labs | Facil | Credenciales Base64 filtradas, capability `cap_dac_override` |
+| El Archivero | whoami-labs | Facil | Directory listing, capability `cap_dac_read_search` en `tar` |
+| El Heredero | whoami-labs | Facil | Clave SSH filtrada, capability `cap_chown` |
+| Jinteki | ThePwnLab | Facil | FTP anónimo, cifrado AES-256-CBC, `sudo ALL:ALL` |
+| El Baifo | TheHackersLabs | Facil | Redis sin auth, MQTT leak, cron script editable por grupo |
 | Bocata de Calamares | TheHackersLabs | - | SQLi login bypass, LFI, `sqlmap`, GTFOBins (`find`) |
-| Fruits | TheHackersLabs | - | LFI vía fuzzing (`ffuf`), bruteforce SSH, GTFOBins (`find`) |
-| Casa Paco | TheHackersLabs | - | Command injection, cron world-writable, SUID bash |
-| Goiko | TheHackersLabs | - | Null session SMB, cracking offline (`john`/`hashcat`), PATH hijacking |
+| Fruits | TheHackersLabs | Facil | LFI vía fuzzing (`ffuf`), bruteforce SSH, GTFOBins (`find`) |
+| Casa Paco | TheHackersLabs | Facil | Command injection, cron world-writable, SUID bash |
+| Goiko | TheHackersLabs | Facil | Null session SMB, cracking offline (`john`/`hashcat`), PATH hijacking |
 
 ---
 
