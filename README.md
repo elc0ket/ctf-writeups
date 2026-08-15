@@ -15,17 +15,17 @@ Writeups técnicos de máquinas y retos CTF resueltos en distintas plataformas, 
 
 | Máquina | Plataforma | Dificultad | Técnicas clave |
 |---|---|---|---|
-| [Msfvenom](./whoami-labs/msfvenom/) | whoami-labs | - | Java RMI (CVE-2011-3556) |
-| [PostgreSQL](./whoami-labs/postgresql/) | whoami-labs | - | Credenciales débiles, `COPY FROM PROGRAM` (CVE-2019-9193) |
-| [El Escriba](./whoami-labs/el-escriba/) | whoami-labs | - | Credenciales Base64 filtradas, capability `cap_dac_override` |
-| [El Archivero](./whoami-labs/el-archivero/) | whoami-labs | - | Directory listing, capability `cap_dac_read_search` en `tar` |
-| [El Heredero](./whoami-labs/el-heredero/) | whoami-labs | - | Clave SSH filtrada, capability `cap_chown` |
-| [Jinteki](./thepwnlab/jinteki/) | ThePwnLab | - | FTP anónimo, cifrado AES-256-CBC, `sudo ALL:ALL` |
-| [El Baifo](./thehackerslabs/el-baifo/) | TheHackersLabs | - | Redis sin auth, MQTT leak, cron script editable por grupo |
-| [Bocata de Calamares](./thehackerslabs/bocata-de-calamares/) | TheHackersLabs | - | SQLi login bypass, LFI, `sqlmap`, GTFOBins (`find`) |
-| [Fruits](./thehackerslabs/fruits/) | TheHackersLabs | - | LFI vía fuzzing (`ffuf`), bruteforce SSH, GTFOBins (`find`) |
-| [Casa Paco](./thehackerslabs/casa-paco/) | TheHackersLabs | - | Command injection, cron world-writable, SUID bash |
-| [Goiko](./thehackerslabs/goiko/) | TheHackersLabs | - | Null session SMB, cracking offline (`john`/`hashcat`), PATH hijacking |
+| [Msfvenom] | whoami-labs | - | Java RMI (CVE-2011-3556) |
+| [PostgreSQL] | whoami-labs | - | Credenciales débiles, `COPY FROM PROGRAM` (CVE-2019-9193) |
+| [El Escriba] | whoami-labs | - | Credenciales Base64 filtradas, capability `cap_dac_override` |
+| [El Archivero] | whoami-labs | - | Directory listing, capability `cap_dac_read_search` en `tar` |
+| [El Heredero] | whoami-labs | - | Clave SSH filtrada, capability `cap_chown` |
+| [Jinteki] | ThePwnLab | - | FTP anónimo, cifrado AES-256-CBC, `sudo ALL:ALL` |
+| [El Baifo] | TheHackersLabs | - | Redis sin auth, MQTT leak, cron script editable por grupo |
+| [Bocata de Calamares] | TheHackersLabs | - | SQLi login bypass, LFI, `sqlmap`, GTFOBins (`find`) |
+| [Fruits] | TheHackersLabs | - | LFI vía fuzzing (`ffuf`), bruteforce SSH, GTFOBins (`find`) |
+| [Casa Paco] | TheHackersLabs | - | Command injection, cron world-writable, SUID bash |
+| [Goiko] | TheHackersLabs | - | Null session SMB, cracking offline (`john`/`hashcat`), PATH hijacking |
 
 ---
 
