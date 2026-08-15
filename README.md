@@ -36,8 +36,6 @@ Writeups organizados por plataforma de origen:
 - **[whoami-labs](./whoami-labs/)**
 - **[TheHackersLabs](./thehackerslabs/)**
 - **[ThePwnLab](./thepwnlab/)**
-- **[HackTheBox](./hackthebox/)**
-- **[BBLabs](./bblabs/)**
 
 ## Estructura de cada writeup
 
