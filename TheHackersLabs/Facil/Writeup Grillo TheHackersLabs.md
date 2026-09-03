@@ -19,7 +19,7 @@ El reconocimiento con nmap reveló solo dos puertos abiertos: SSH (22) y HTTP (8
 - Análisis de código fuente HTML en busca de comentarios filtrados
 - Fuerza bruta de credenciales SSH con Hydra + rockyou.txt
 - Enumeración de privilegios sudo (`sudo -l`)
-- Escalada de privilegios abusando de `puttygen` con permisos NOPASSWD para escribir `authorized_keys` de root (GTFOBins)
+- Escalada de privilegios abusando de `puttygen` con permisos NOPASSWD para escribir `authorized_keys` de root
 
 ### Desarrollo
 
